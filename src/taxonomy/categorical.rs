@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use serde::{Serialize, Deserialize};
 
 /**
    Categorical taxanomy Stucts
@@ -20,7 +21,7 @@ pub struct CategoricalTaxonomy {
    pub root_id: String
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct CategoricalHierarchy {
    pub col_name: String,
    pub children: Vec<CategoricalHierarchy>,

@@ -13,7 +13,7 @@ pub struct NumericalNode {
     pub parent: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct NumericalTaxonomy {
     pub nodes: HashMap<String, NumericalNode>,
     // These min and max will be for

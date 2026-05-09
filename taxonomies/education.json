@@ -1,0 +1,40 @@
+{
+    "col_name": "*",
+    "children": [
+        {
+            "col_name": "Pre-College",
+            "children": [
+                {"col_name": "Primary", "children": []},
+                {"col_name": "Middle-School", "children": []},
+                {"col_name": "High-School", "children": []}
+            ]
+        },
+        {
+            "col_name": "College",
+            "children": [
+                {
+                    "col_name": "Undergraduate",
+                    "children": [
+                    {"col_name": "Some-college", "children": []},
+                    {"col_name": "Assoc-voc", "children": []},
+                    {"col_name": "Assoc-acdm", "children": []},
+                    {"col_name": "Bachelors", "children": []}
+                    ]
+                }
+            ]
+        },
+        {
+            "col_name": "Post-Graduate",
+            "children": [
+                {
+                    "col_name": "Graduate",
+                    "children": [
+                    {"col_name": "Masters", "children": []},
+                    {"col_name": "Prof-school", "children": []},
+                    {"col_name": "Doctorate", "children": []}
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -21,9 +21,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // just age numerical qi for phase 1
     let qis = QuasiIdentifiers::from_column_names(&[
-        ("age", QIType::Numerical { bucket_size: 5 }),
-        ("workclass", QIType::Categorical { json_path: "taxonomies/workclass.json".into() }),
-        ("education", QIType::Categorical { json_path: "taxonomies/education.json".into() }),
+        ("age", QIType::Numerical { leaf_bucket_size: 5 }),
+        ("workclass", QIType::Categorical { path_to_json_hierarchy: "taxonomies/workclass.json".into() }),
+        ("education", QIType::Categorical { path_to_json_hierarchy: "taxonomies/education.json".into() }),
     ]);
 
     let dataset = Dataset::build(&df, &qis)?;
