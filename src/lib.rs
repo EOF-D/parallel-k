@@ -1,5 +1,9 @@
-pub mod data_interface;
-pub mod types;
+// remove very soon
+#![allow(unused)]
+
+pub mod anonymize;
+pub mod data;
+pub mod algorithms;
 
 #[cfg(test)]
 mod tests { }

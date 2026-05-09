@@ -8,3 +8,6 @@ polars = { version = "0.53.0", features = ["lazy", "csv", "replace", "polars-ops
 
 [[example]]
 name = "adult"
+
+[[example]]
+name = "anonymize_mondrian"
