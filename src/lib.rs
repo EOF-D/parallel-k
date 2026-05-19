@@ -3,6 +3,7 @@
 
 pub mod anonymize;
 pub mod data;
+pub mod taxonomy;
 pub mod algorithms;
 
 #[cfg(test)]
