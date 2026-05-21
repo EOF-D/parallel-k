@@ -1,3 +1,4 @@
+use std::ops::Range;
 use std::time::{Duration, Instant};
 
 use rayon::prelude::*;
@@ -74,23 +75,29 @@ impl Anonymizer {
         })
     }
 
-    /// Run several anonymization algorithms in parallel against the dataset.
+    /// Run algorithms across a range of k values in parallel.
     ///
     /// # Parameters
-    /// - `algorithms`: The anonymization algorithms to run.
-    /// - `k`: The k in k-anonymity, i.e., the minimum number of rows that must share the same QI values.
+    /// - `k_range`: The range of k values to evaluate (e.g., `2..10`).
+    /// - `algorithms`: The anonymization algorithms to run for each k value.
     ///
     /// # Returns
-    /// - `Ok(Vec<AnonymizerOutput>)`: A vector of outputs from each algorithm.
-    /// - `Err(AlgorithmError)`: An error if any of the algorithms fail during anonymization.
+    /// - `Ok(Vec<AnonymizerOutput>)`: A list of anonymization outputs.
+    /// - `Err(AlgorithmError)`: An error if any algorithm fails for any k value.
     pub fn run_parallel(
         &self,
-        algorithms: &[Box<dyn AnonymizationAlgorithm>],
-        k: u32,
+        k_range: Range<u32>,
+        algorithms: &[&dyn AnonymizationAlgorithm],
     ) -> Result<Vec<AnonymizerOutput>, AlgorithmError> {
-        algorithms
-            .par_iter()
-            .map(|algorithm| self.run(algorithm.as_ref(), k))
-            .collect()
+        k_range
+            .into_par_iter()
+            .map(|k| {
+                algorithms
+                    .iter()
+                    .map(|&alg| self.run(alg, k))
+                    .collect::<Result<Vec<_>, _>>()
+            })
+            .collect::<Result<Vec<_>, _>>()
+            .map(|per_k| per_k.into_iter().flatten().collect())
     }
 }
