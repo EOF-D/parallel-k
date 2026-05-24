@@ -104,10 +104,64 @@ impl CategoricalTaxonomy {
         node_id
     }
 
-    // pub fn find_lca(&self, values: &[String]) -> Option<String> {
-    //     // to-do
-    //     None
-    // }
+    /// Find the lowest common ancestor of the given values in this taxonomy.
+    ///
+    /// # Parameters
+    /// - `values`: A slice of string values to find the LCA for.
+    ///
+    /// # Returns
+    /// - `Some(String)`: The value of the lowest common ancestor if found.
+    /// - `None`: If the input slice is empty or if any value is not found.
+    pub fn find_lca(&self, values: &[&str]) -> Option<String> {
+        if values.is_empty() {
+            return None;
+        }
+
+        // For each value, find its node and collect all ancestor node IDs.
+        let mut ancestor_sets: Vec<std::collections::HashSet<String>> = Vec::new();
+
+        for &value in values {
+            // Find the node whose value field matches.
+            let start_node = self.nodes.values().find(|n| n.value == value)?;
+
+            let mut ancestors: std::collections::HashSet<String> = std::collections::HashSet::new();
+            let mut current_id = start_node.id.clone();
+
+            loop {
+                ancestors.insert(current_id.clone());
+                let current_node = self.nodes.get(&current_id)
+                    .expect("every node id stored in the tree must exist in the nodes map");
+
+                match &current_node.parent {
+                    Some(parent_id) => current_id = parent_id.clone(),
+                    None => break,
+                }
+            }
+
+            ancestor_sets.push(ancestors);
+        }
+
+        // Intersect all ancestor sets to find common ancestors.
+        let common: std::collections::HashSet<String> = ancestor_sets
+            .into_iter()
+            .reduce(|acc, set| acc.intersection(&set).cloned().collect())?;
+
+        // LCA is the common ancestor with the minimum level.
+        let lca_id = common
+            .into_iter()
+            .min_by_key(|id| {
+                self.nodes.get(id)
+                    .expect("every id in ancestor set must exist in nodes map")
+                    .level
+            })?;
+
+        Some(
+            self.nodes.get(&lca_id)
+                .expect("lca_id must exist in nodes map")
+                .value
+                .clone(),
+        )
+    }
 
     pub fn print_categorical_taxanomy_tree(&self) {
         if let Some(root_node) = self.nodes.get(&self.root_id) {
@@ -132,5 +186,66 @@ impl CategoricalTaxonomy {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
 
+    fn build_test_taxonomy() -> CategoricalTaxonomy {
+        let hierarchy = CategoricalHierarchy {
+            col_name: "Root".to_string(),
+            children: vec![
+                CategoricalHierarchy {
+                    col_name: "Mid1".to_string(),
+                    children: vec![
+                        CategoricalHierarchy::new("LeafA"),
+                        CategoricalHierarchy::new("LeafB"),
+                    ],
+                },
+                CategoricalHierarchy {
+                    col_name: "Mid2".to_string(),
+                    children: vec![
+                        CategoricalHierarchy::new("LeafC"),
+                    ],
+                },
+            ],
+        };
 
+        CategoricalTaxonomy::create_from_hierarchy("col", &hierarchy)
+            .expect("test taxonomy must build without error")
+    }
+
+    #[test]
+    fn test_find_lca_single_value_returns_self() {
+        let tax = build_test_taxonomy();
+        assert_eq!(tax.find_lca(&["LeafA"]), Some("LeafA".to_string()));
+        assert_eq!(tax.find_lca(&["Root"]), Some("Root".to_string()));
+        assert_eq!(tax.find_lca(&["Mid1"]), Some("Mid1".to_string()));
+    }
+
+    #[test]
+    fn test_find_lca_two_siblings_returns_parent() {
+        let tax = build_test_taxonomy();
+
+        // LeafA and LeafB share parent Mid1.
+        assert_eq!(tax.find_lca(&["LeafA", "LeafB"]), Some("Mid1".to_string()));
+    }
+
+    #[test]
+    fn test_find_lca_all_leaves_returns_root() {
+        let tax = build_test_taxonomy();
+        assert_eq!(tax.find_lca(&["LeafA", "LeafB", "LeafC"]), Some("Root".to_string()));
+    }
+
+    #[test]
+    fn test_find_lca_empty_returns_none() {
+        let tax = build_test_taxonomy();
+        assert_eq!(tax.find_lca(&[]), None);
+    }
+
+    #[test]
+    fn test_find_lca_unknown_value_returns_none() {
+        let tax = build_test_taxonomy();
+        assert_eq!(tax.find_lca(&["None"]), None);
+        assert_eq!(tax.find_lca(&["LeafA", "Random"]), None);
+    }
+}

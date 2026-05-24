@@ -22,6 +22,21 @@ impl Dataset {
     pub fn from_dataframe(_df: DataFrame) -> Self { todo!() }
 
 
+    /// Creates a Dataset from an already anonymized DataFrame and pre-built taxonomies.
+    ///
+    /// Prefer `Dataset::build` when starting from raw data where taxonomies still need to be derived.
+    ///
+    /// # Parameters
+    /// - `df`: The anonymized DataFrame containing the data.
+    /// - `qis`: The quasi-identifiers associated with the dataset.
+    /// - `taxonomies`: The pre-built TaxonomyManager containing the taxonomies for the dataset.
+    ///
+    /// # Returns
+    /// - `Dataset`: The constructed dataset.
+    pub fn from_anonymized(df: DataFrame, qis: QuasiIdentifiers, taxonomies: TaxonomyManager) -> Self {
+        Self { df, qis, taxonomies }
+    }
+
     // build taxonomies
     pub fn build(
         df: &DataFrame,

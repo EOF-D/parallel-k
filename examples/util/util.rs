@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use std::path::PathBuf;
+
 use polars::prelude::*;
 
 pub fn clean_adult_csv(path: PathBuf) -> Result<DataFrame, Box<dyn std::error::Error>> {
@@ -32,4 +34,40 @@ pub fn clean_adult_csv(path: PathBuf) -> Result<DataFrame, Box<dyn std::error::E
     ).collect()?;
 
     Ok(df)
+}
+
+/// Verify k-anonymity property.
+///
+/// # Parameters
+/// - `df`: The DataFrame to verify.
+/// - `qi_columns`: The list of quasi-identifier column names to consider for grouping.
+/// - `k`: The k value for k-anonymity.
+pub fn verify_k_anonymity(df: &DataFrame, qi_columns: &[&str], k: usize) -> bool {
+    if df.height() == 0 {
+        return true;
+    }
+
+    let mut groups: HashMap<String, usize> = HashMap::new();
+
+    for row in 0..df.height() {
+        let mut key = String::new();
+        for &col_name in qi_columns {
+            let val = df
+                .column(col_name)
+                .expect("QI column must exist in DataFrame")
+                .as_series()
+                .expect("column must be a Series")
+                .str()
+                .expect("QI column must be String dtype after anonymization")
+                .get(row)
+                .unwrap_or("null");
+
+            key.push_str(val);
+            key.push('|');
+        }
+
+        *groups.entry(key).or_insert(0) += 1;
+    }
+
+    groups.values().all(|&count| count >= k)
 }

@@ -1,40 +1,109 @@
 {
-    "col_name": "*",
-    "children": [
+  "col_name": "*",
+  "children": [
+    {
+      "col_name": "Pre-College",
+      "children": [
         {
-            "col_name": "Pre-College",
-            "children": [
-                {"col_name": "Primary", "children": []},
-                {"col_name": "Middle-School", "children": []},
-                {"col_name": "High-School", "children": []}
-            ]
+          "col_name": "Primary",
+          "children": [
+            {
+              "col_name": "Preschool",
+              "children": []
+            },
+            {
+              "col_name": "1st-4th",
+              "children": []
+            },
+            {
+              "col_name": "5th-6th",
+              "children": []
+            }
+          ]
         },
         {
-            "col_name": "College",
-            "children": [
-                {
-                    "col_name": "Undergraduate",
-                    "children": [
-                    {"col_name": "Some-college", "children": []},
-                    {"col_name": "Assoc-voc", "children": []},
-                    {"col_name": "Assoc-acdm", "children": []},
-                    {"col_name": "Bachelors", "children": []}
-                    ]
-                }
-            ]
+          "col_name": "Middle-School",
+          "children": [
+            {
+              "col_name": "7th-8th",
+              "children": []
+            },
+            {
+              "col_name": "9th",
+              "children": []
+            }
+          ]
         },
         {
-            "col_name": "Post-Graduate",
-            "children": [
-                {
-                    "col_name": "Graduate",
-                    "children": [
-                    {"col_name": "Masters", "children": []},
-                    {"col_name": "Prof-school", "children": []},
-                    {"col_name": "Doctorate", "children": []}
-                    ]
-                }
-            ]
+          "col_name": "High-School",
+          "children": [
+            {
+              "col_name": "10th",
+              "children": []
+            },
+            {
+              "col_name": "11th",
+              "children": []
+            },
+            {
+              "col_name": "12th",
+              "children": []
+            },
+            {
+              "col_name": "HS-grad",
+              "children": []
+            }
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "col_name": "College",
+      "children": [
+        {
+          "col_name": "Undergraduate",
+          "children": [
+            {
+              "col_name": "Some-college",
+              "children": []
+            },
+            {
+              "col_name": "Assoc-voc",
+              "children": []
+            },
+            {
+              "col_name": "Assoc-acdm",
+              "children": []
+            },
+            {
+              "col_name": "Bachelors",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "col_name": "Post-Graduate",
+      "children": [
+        {
+          "col_name": "Graduate",
+          "children": [
+            {
+              "col_name": "Masters",
+              "children": []
+            },
+            {
+              "col_name": "Prof-school",
+              "children": []
+            },
+            {
+              "col_name": "Doctorate",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
